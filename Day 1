@@ -13,3 +13,126 @@ class Solution{
     return min_diff;
     }
 };
+
+
+287. Find the Duplicate Number
+
+class Solution {
+public:
+    int findDuplicate(vector<int>& nums) {
+        unordered_map<int , int> mp;
+        for(auto it : nums){
+            mp[it]++;
+        }
+        for(auto it : mp){
+            if(it.second > 1){
+                return it.first;
+            }
+        }
+        return {};
+    }
+};
+
+
+75. Sort Colors
+
+
+class Solution {
+public:
+    void sortColors(vector<int>& nums) {
+        int n = nums.size();
+        int count0 = 0;
+        int count1 = 0;
+        int count2 = 0;
+        
+        for(int i = 0; i < n; i++){
+            if(nums[i] == 0) count0++;
+            else if(nums[i] == 1) count1++;
+            else count2++;
+        }
+        
+        for(int i = 0; i < count0; i++){
+            nums[i] = 0;
+        }
+        
+        for(int i = count0; i < count0+count1; i++){
+            nums[i] = 1;
+        }
+        
+        for(int i = count0+count1; i < n; i++){
+            nums[i] = 2;
+        }
+    }
+};
+
+
+26. Remove Duplicates from Sorted Array
+
+
+class Solution {
+public:
+    int removeDuplicates(vector<int>& nums) {
+        int startIndex = 0;
+        
+        for(int i = 1; i < nums.size(); i++){
+            if(nums[startIndex] != nums[i]){
+                startIndex++;
+                nums[startIndex] = nums[i];
+            }
+        }
+        return startIndex+1;
+    }
+};
+
+
+283. Move Zeroes
+
+
+class Solution {
+public:
+    void moveZeroes(vector<int>& nums) {
+        int i = 0;
+        int j = 1;
+        while(j < nums.size()){
+            if(nums[i] == 0 && nums[j] != 0){
+                swap(nums[i] , nums[j]);
+                i++;
+                j++;
+            }
+            else if(nums[i] == 0 && nums[j] == 0){
+                j++;
+            }
+            else{
+                i++;
+                j++;
+            }
+        }
+    }
+};
+
+121. Best Time to Buy and Sell Stock
+
+
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int minPrice = INT_MAX;
+        int maxProfit = 0;
+        
+        for(int price : prices) {
+            // Update minPrice if the current price is lower
+            if (price < minPrice) {
+                minPrice = price;
+            }
+            
+            else {
+                int profit = price - minPrice;   // Calculate the profit if we sell at the current price
+                // Update maxProfit if the current profit is higher
+                if(profit > maxProfit) {
+                    maxProfit = profit;
+                }
+            }
+        }
+        return maxProfit;
+    }
+};
