@@ -1,1 +1,167 @@
-26. Remove Duplicates from Sorted Array
+1. Two Sum
+
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        unordered_map<int , int> mp;
+
+        for(int i = 0 ; i < nums.size() ; i++){
+            if(mp.find(target - nums[i]) != mp.end()){
+                return {i , mp[target - nums[i]]};
+            }
+            mp[nums[i]] = i;
+        }
+        return {};
+    }
+};
+
+
+15. 3Sum
+
+class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        vector<vector<int>> res;
+        sort(nums.begin() , nums.end());
+
+        for(int i = 0 ; i < nums.size() ; i++){
+            int target = -nums[i];
+            int front = i+1;
+            int back = nums.size() - 1;
+            while(front < back){
+                int sum = nums[front] + nums[back];
+                if(sum < target){
+                    front++;
+                }
+                else if(sum > target){
+                    back--;
+                }
+                else{
+                    vector<int> triplet= {nums[i] , nums[front] , nums[back]};
+                    res.push_back(triplet);
+                        while(front < back && nums[front] == triplet[1]){
+                            front++;
+                        }
+                        while(front < back && nums[back] == triplet[2]){
+                            back--;
+                        }
+                }
+            }
+            while(i+1 < nums.size() && nums[i+1] == nums[i]){
+                i++;
+            }
+        }
+        return res;
+    }
+};
+
+
+11. Container With Most Water
+
+class Solution {
+public:
+    int maxArea(vector<int>& height) {
+        int left = 0;
+        int right = height.size() - 1;
+        int maxArea = 0;
+
+        while (left < right) {
+            int currentArea = min(height[left], height[right]) * (right - left);
+            maxArea = max(maxArea, currentArea);
+
+            if (height[left] < height[right]) {
+                left++;
+            } else {
+                right--;
+            }
+        }
+
+        return maxArea;
+    }
+};
+
+442. Find All Duplicates in an Array
+
+class Solution{
+public:
+    vector<int> findDuplicates(vector<int>& nums){
+        vector<int> duplicates;
+        for (int num : nums){ // // Calculate the index by subtracting 1 from
+            int index = abs(num) - 1;   // the absolute value of the number.
+
+            // Check if the value at the calculated index is negative.      
+            if (nums[index] < 0) {  // // If it's negative, then the current number is a 
+                duplicates.push_back(index + 1);  // duplicate. Add it to the duplicates vector.
+            }
+            
+            else { // // If it's not negative, negate the value at the 
+                nums[index] = -nums[index];  // calculated index to mark it as visited.
+            }
+        }
+
+        for (int& num : nums){ // // Iterate through the modified nums array and convert all values
+            num = abs(num);   // back to positive using abs().
+        }
+        return duplicates;  // Return the vector containing duplicate numbers.
+    }
+};
+
+
+974. Subarray Sums Divisible by K
+
+class Solution {
+public:
+    int subarraysDivByK(vector<int>& nums, int k) {
+        int n = nums.size();
+        
+        unordered_map<int, int> mp;
+        int sum = 0;
+        
+        mp[0] = 1;
+        
+        int result = 0;
+        
+        for(int i = 0; i < n; i++){
+            sum += nums[i];
+            
+            int rem = sum%k;
+            
+            if(rem < 0){
+                rem += k;
+            }
+            
+            if(mp.find(rem) != mp.end()){
+                result += mp[rem];
+            }
+            
+            mp[rem]++;
+        }
+        return result;
+    }
+};
+
+
+122. Best Time to Buy and Sell Stock II
+
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        
+        // It is impossible to sell stock on first day, set -infinity as initial value for curHold
+        int curHold = INT_MIN, curNotHold = 0;
+        
+        for( const int stockPrice : prices ){
+            
+            int prevHold = curHold, prevNotHold = curNotHold;
+            
+            // either keep hold, or buy in stock today at stock price
+            curHold = max( prevHold, prevNotHold - stockPrice );
+            
+            // either keep not-hold, or sell out stock today at stock price
+            curNotHold = max( prevNotHold, prevHold + stockPrice );
+        }
+        
+        // Max profit must come from notHold state finally.
+        return curNotHold;
+    }
+};
