@@ -1,1 +1,273 @@
+1423. Maximum Points You Can Obtain from Cards
 
+  int maxScore(vector<int>& cardPoints, int k) {
+        int sum = 0;
+        int n = cardPoints.size();
+        
+        vector<int> cummulativeSumFromFront(n+1, 0);
+        vector<int> cummulativeSumFromBehind(n+1, 0);
+        
+        sum = 0;
+        for (int i=0; i<n; i++) {
+            sum += cardPoints[i];
+            cummulativeSumFromFront[i+1] = sum;
+        }
+        sum = 0;
+        for (int i=n-1; i>=0; i--) {
+            sum += cardPoints[i];
+            cummulativeSumFromBehind[i] = sum;
+        }
+        
+        // Reversing is optional. I reversed it so that it would be easy
+        // to access sum of last (k-i) elements by just indexing at [k-i]
+        // Otherwise, I would have had to index it at [n-k+i] which would
+        // have made it difficult to read.
+        reverse(cummulativeSumFromBehind.begin(), cummulativeSumFromBehind.end());
+        
+        int answer = 0;
+        for(int i=0; i<=k; i++) {      
+            answer = max(answer, 
+                           cummulativeSumFromFront[i] // Sum of first 'i' cards.
+                         + cummulativeSumFromBehind[k-i]); // Sum of last 'k-i' cards.
+        }
+        return answer;
+    }
+
+
+
+18. 4Sum
+
+
+class Solution {
+public:
+    vector<vector<int>> fourSum(vector<int>& nums, int target) {
+        int n = nums.size();
+        vector<vector<int>> ans;
+        sort(nums.begin() , nums.end());
+
+        for(int i = 0 ; i < n ; i++){
+
+            if(i > 0 && nums[i] == nums[i-1]){
+                continue;      // element is same so don't consider
+            }
+
+            for(int j = i+1; j < n ;j++){
+
+                if(j != (i+1) && nums[j] == nums[j-1]){
+                    continue;      // same
+                }
+
+                int k = j+1;
+                int l = n-1;
+
+                while(k < l){
+
+                    long long sum = nums[i];
+                    sum += nums[j];
+                    sum += nums[k];
+                    sum += nums[l];
+
+                    if(sum == target){
+                        vector<int> temp = {nums[i] , nums[j] , nums[k] , nums[l]};
+                        ans.push_back(temp);
+                        k++;
+                        l--;
+
+                        while(k < l && nums[k] == nums[k-1]){
+                            k++;      // same
+                        }
+
+                        while(k < l && nums[l] == nums[l+1]){
+                            l--;      // same
+                        }
+                    }
+
+                    else if(sum < target){
+                        k++;
+                    }
+
+                    else{
+                        l--;
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+};
+
+
+15. 3Sum
+
+class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        vector<vector<int>> res;
+        sort(nums.begin() , nums.end());
+
+        for(int i = 0 ; i < nums.size() ; i++){
+            int target = -nums[i];
+            int front = i+1;
+            int back = nums.size() - 1;
+            while(front < back){
+                int sum = nums[front] + nums[back];
+                if(sum < target){
+                    front++;
+                }
+                else if(sum > target){
+                    back--;
+                }
+                else{
+                    vector<int> triplet= {nums[i] , nums[front] , nums[back]};
+                    res.push_back(triplet);
+                        while(front < back && nums[front] == triplet[1]){
+                            front++;
+                        }
+                        while(front < back && nums[back] == triplet[2]){
+                            back--;
+                        }
+                }
+            }
+            while(i+1 < nums.size() && nums[i+1] == nums[i]){
+                i++;
+            }
+        }
+        return res;
+    }
+};
+
+560. Subarray Sum Equals K
+
+class Solution {
+public:
+    int subarraySum(vector<int>& arr, int k) {
+        int n = arr.size(); // taking the size of the array
+        
+        int ans = 0; // ans variable to store our count
+        
+        for(int i = 0; i < n; i++) // traverse from the array
+        {
+            int sum = arr[i]; // provide sum with arr[i]
+            
+            if(sum == k) // if element itself equal to k, then also increment count
+                ans++;
+            
+            for(int j = i + 1; j < n; j++) // now moving forward,
+            {
+                sum += arr[j]; // add elements with sum
+                
+                if(sum == k) // if at any point they become equal to k
+                    ans++; // increment answer
+            }
+            
+        }
+        
+        return ans; // and at last, return answer
+    }
+};
+
+
+54. Spiral Matrix
+
+
+class Solution{
+public:
+    vector<int> spiralOrder(vector<vector<int>>& matrix){
+    int row = matrix.size();
+    int column = matrix[0].size();
+    
+    vector<int> ans;
+    
+    if(row == 0){
+        return ans;
+    }
+    
+    int left = 0;
+    int right = column - 1;
+    int top = 0;
+    int bottom = row - 1;
+    int d = 0;
+    
+    while(left <= right && top <= bottom){
+        if(d == 0){
+            for(int i = left ; i <= right; i++){
+                ans.push_back(matrix[top][i]);
+            }
+            d = 1;
+            top++;
+        }
+        
+        else if(d == 1){
+            for(int i = top ; i <= bottom; i++){
+                ans.push_back(matrix[i][right]);
+            }
+            d = 2;
+            right--;
+        }
+        
+        else if(d == 2){
+            for(int i = right ; i >= left; i--){
+                ans.push_back(matrix[bottom][i]);
+            }
+            d = 3;
+            bottom--;
+        }
+        
+        else if(d == 3){
+            for(int i = bottom ; i >= top; i--){
+                ans.push_back(matrix[i][left]);
+            }
+            d = 0;
+            left++;
+        }
+    }
+    return ans;
+    }
+};
+
+
+79. Word Search
+
+
+class Solution {
+public:
+    int l, m, n;
+    vector<vector<int>> directions{{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+    bool find(vector<vector<char>>& board, int i, int j, string &word, int idx) {
+        if(idx >= l)
+            return true;
+        
+        if(i < 0 || i >= m || j < 0 || j >= n || board[i][j] != word[idx])
+            return false;
+        
+        char temp = board[i][j];
+        board[i][j] = '$';
+        
+        for(auto& dir : directions) {
+            int i_ = i + dir[0];
+            int j_ = j + dir[1];
+            
+            if(find(board, i_, j_, word, idx+1))
+                return true;
+        }
+        board[i][j] = temp;
+        return false;
+    }
+    
+    bool exist(vector<vector<char>>& board, string word) {
+        m = board.size();
+        n = board[0].size();
+        l = word.length();
+        if(m*n < l)
+            return false;
+        
+        for(int i = 0; i<m; i++) {
+            for(int j = 0; j<n; j++) {
+                if(board[i][j] == word[0] && find(board, i, j, word, 0)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+};
