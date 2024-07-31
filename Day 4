@@ -1,1 +1,115 @@
+All Unique Permutations of an array
 
+
+class Solution {
+  public:
+    vector<vector<int>> uniquePerms(vector<int> &arr ,int n) {
+        // code here
+        vector<vector<int>> perm;
+        
+        sort(arr.begin(),arr.end());
+        
+        do{
+            perm.push_back(arr);
+        }
+        while(next_permutation(arr.begin(),arr.end()));
+        
+        return perm;
+    }
+};
+
+
+
+493. Reverse Pairs
+
+
+
+class Solution {
+public:
+    int reversePairs(vector<int>& nums) {
+        int n = nums.size();
+        long long reversePairsCount = 0;
+        for(int i=0; i<n-1; i++){
+            for(int j=i+1; j<n; j++){
+                if(nums[i] > 2*(long long)nums[j]){
+                    reversePairsCount++;
+                }
+            }
+        }
+        return reversePairsCount;
+    }
+};
+
+
+169. Majority Element
+
+
+class Solution {
+public:
+    int majorityElement(vector<int>& nums) {
+        int n = nums.size();
+        int count = 0;
+        int majorityElement = 0;
+
+        for(int i = 0; i < n; i++){
+            if(count == 0){
+                count = 1;
+                majorityElement = nums[i];
+            }
+            else if(nums[i] == majorityElement)
+                count++;
+            else
+                count--;
+        }
+        return majorityElement;
+    }
+};
+
+
+. Jump Game
+
+
+class Solution {
+public:
+    bool canJump(vector<int>& nums) {
+        int reachable = 0;
+        int n = nums.size();
+
+        for(int i = 0; i < n; i++){
+            if(i > reachable){
+                return false;
+            }
+            else{
+                reachable = max(reachable, i+nums[i]);
+            }
+        }
+        return true;
+    }
+};
+
+88. Merge Sorted Array
+
+
+class Solution {
+public:
+    void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+        int i = m-1, j = n-1, k = m+n-1;
+        
+        while(i >= 0 && j >= 0){
+            if(nums1[i] > nums2[j]){
+                nums1[k--] = nums1[i--];
+            }
+            else{
+                nums1[k--] = nums2[j--];
+            }
+        }
+        
+        while(i >= 0){
+            nums1[k--] = nums1[i--];
+        }
+        
+        while(j >= 0){
+            nums1[k--] = nums2[j--];
+        }
+    }
+};
