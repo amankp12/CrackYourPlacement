@@ -1,1 +1,144 @@
+68. Text Justification
 
+class Solution {
+public:
+    vector<string> fullJustify(vector<string>& words, int maxWidth) {
+        vector<string> result;
+        const int totalWords = words.size()-1;
+        
+        for (int begin=0, moreWords=0; begin<=totalWords; begin=moreWords) {
+            string currentBlock(maxWidth, ' ');
+
+            currentBlock.replace(0, words[begin].size(), words[begin]);
+
+            int remainingSpace = maxWidth - words[begin].size();
+            for(moreWords=begin+1; moreWords <=totalWords && words[moreWords].size() < remainingSpace; moreWords++) {
+                remainingSpace -= words[moreWords].size()+1;
+            }
+            
+            int wordJoints = moreWords - begin -1;
+            if(wordJoints){
+                int evenlyDistributedSpace = 1; 
+                int unEvenSpace = 0;
+                if (moreWords <= totalWords) {
+                    evenlyDistributedSpace += remainingSpace / wordJoints;
+                    unEvenSpace = remainingSpace % wordJoints;
+                }
+                for(int i=begin+1, index=words[begin].size(); i < moreWords; i++){
+                    index += evenlyDistributedSpace + (unEvenSpace-- > 0);
+                    currentBlock.replace(index, words[i].size(), words[i]);
+                    index += words[i].size();
+                }
+            }
+            result.push_back(currentBlock);
+        }
+        return result;
+    }
+};
+
+
+
+Boyer Moore Algorithm for Pattern Searching
+
+
+/* C++ Program for Bad Character Heuristic of Boyer
+Moore String Matching Algorithm */
+#include <bits/stdc++.h>
+using namespace std;
+#define NO_OF_CHARS 256
+
+// The preprocessing function for Boyer Moore's
+// bad character heuristic
+void badCharHeuristic(string str, int size,
+					int badchar[NO_OF_CHARS])
+{
+	int i;
+
+	// Initialize all occurrences as -1
+	for (i = 0; i < NO_OF_CHARS; i++)
+		badchar[i] = -1;
+
+	// Fill the actual value of last occurrence
+	// of a character
+	for (i = 0; i < size; i++)
+		badchar[(int)str[i]] = i;
+}
+
+/* A pattern searching function that uses Bad
+Character Heuristic of Boyer Moore Algorithm */
+void search(string txt, string pat)
+{
+	int m = pat.size();
+	int n = txt.size();
+
+	int badchar[NO_OF_CHARS];
+
+	/* Fill the bad character array by calling
+	the preprocessing function badCharHeuristic()
+	for given pattern */
+	badCharHeuristic(pat, m, badchar);
+
+	int s = 0; // s is shift of the pattern with
+			// respect to text
+	while (s <= (n - m)) {
+		int j = m - 1;
+
+		/* Keep reducing index j of pattern while
+		characters of pattern and text are
+		matching at this shift s */
+		while (j >= 0 && pat[j] == txt[s + j])
+			j--;
+
+		/* If the pattern is present at current
+		shift, then index j will become -1 after
+		the above loop */
+		if (j < 0) {
+			cout << "pattern occurs at shift = " << s
+				<< endl;
+
+			/* Shift the pattern so that the next
+			character in text aligns with the last
+			occurrence of it in pattern.
+			The condition s+m < n is necessary for
+			the case when pattern occurs at the end
+			of text */
+			s += (s + m < n) ? m - badchar[txt[s + m]] : 1;
+		}
+
+		else
+			/* Shift the pattern so that the bad character
+			in text aligns with the last occurrence of
+			it in pattern. The max function is used to
+			make sure that we get a positive shift.
+			We may get a negative shift if the last
+			occurrence of bad character in pattern
+			is on the right side of the current
+			character. */
+			s += max(1, j - badchar[txt[s + j]]);
+	}
+}
+
+/* Driver code */
+int main()
+{
+	string txt = "ABAAABCD";
+	string pat = "ABC";
+	search(txt, pat);
+	return 0;
+}
+
+115. Distinct Subsequences
+
+
+class Solution {
+public:
+    int numDistinct(string s, string t) {
+        int m = t.length(), n = s.length();
+        vector<vector<int>> dp(m + 1, vector<int> (n + 1, 0));
+        for (int j = 0; j <= n; j++) dp[0][j] = 1;
+        for (int j = 1; j <= n; j++)
+            for (int i = 1; i <= m; i++)
+                dp[i][j] = dp[i][j - 1] + (t[i - 1] == s[j - 1] ? dp[i - 1][j - 1] : 0);
+        return dp[m][n];
+    }
+};
