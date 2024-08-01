@@ -1,1 +1,231 @@
+22. Generate Parentheses
 
+class Solution {
+public:
+    vector<string> generateParenthesis(int n) {
+        vector<string> res;
+        addingpar(res, "", n, 0);
+        return res;
+    }
+    void addingpar(vector<string> &v, string str, int n, int m){
+        if(n==0 && m==0) {
+            v.push_back(str);
+            return;
+        }
+        if(m > 0){ addingpar(v, str+")", n, m-1); }
+        if(n > 0){ addingpar(v, str+"(", n-1, m+1); }
+    }
+};
+
+
+
+71. Simplify Path
+
+
+class Solution {
+public:
+    string simplifyPath(string path) {
+        vector<string> stack;
+        string res, temp;
+        stringstream p(path);
+        
+        while (getline(p, temp, '/')) {
+            if (temp == "" or temp == ".") continue;
+            if (!stack.empty() && temp == "..")
+                stack.pop_back();
+            else if (temp != "..")
+                stack.push_back(temp);
+        }
+        for (auto s : stack)
+            res += "/" + s;
+        
+        return stack.empty() ? "/" : res;
+    }
+};
+
+
+Smallest window in a string containing all the characters of another string
+
+
+string smallestWindow (string s, string p)
+    {
+        // Your code here
+        vector<int>pat(26,0),str(26,0);
+        for(auto x:p)
+            pat[x-'a']++;
+        int j=0,match=0;
+        string ans="",temp="";
+        for(int i=0;i<s.size();i++)
+        {
+            str[s[i]-'a']++;
+            temp+=s[i];
+            if(pat[s[i]-'a']>0&&str[s[i]-'a']<=pat[s[i]-'a'])
+                match++;
+            while(match==p.size())
+            {
+                if(ans=="")
+                    ans=temp;
+                temp.erase(temp.begin());
+                str[s[j]-'a']--;
+                if(str[s[j]-'a']<pat[s[j]-'a'])
+                {
+                    match--;
+                }
+                else
+                {
+                    if(temp.size()<ans.size())
+                        ans=temp;
+                }
+                
+                j++;
+            }
+        }
+        if(ans.size()==0)
+            return "-1";
+        return ans;
+    }
+
+
+
+151. Reverse Words in a String
+
+
+class Solution {
+public:
+    string reverseWords(string s) {
+        vector<string> words;
+        stringstream ss(s);
+        string tmp;
+        while (ss >> tmp)
+            words.push_back(tmp);
+
+        string ans;
+        for (int i = words.size() - 1; i >= 0; --i) {
+            if (i != words.size() - 1) ans += " ";
+            ans += words[i];
+        }
+        return ans;
+    }
+};
+
+
+Rabin-Karp Algorithm for Pattern Searching
+
+
+/* Following program is a C++ implementation of Rabin Karp
+Algorithm given in the CLRS book */
+#include <bits/stdc++.h>
+using namespace std;
+
+// d is the number of characters in the input alphabet
+#define d 256
+
+/* pat -> pattern
+	txt -> text
+	q -> A prime number
+*/
+void search(char pat[], char txt[], int q)
+{
+	int M = strlen(pat);
+	int N = strlen(txt);
+	int i, j;
+	int p = 0; // hash value for pattern
+	int t = 0; // hash value for txt
+	int h = 1;
+
+	// The value of h would be "pow(d, M-1)%q"
+	for (i = 0; i < M - 1; i++)
+		h = (h * d) % q;
+
+	// Calculate the hash value of pattern and first
+	// window of text
+	for (i = 0; i < M; i++) {
+		p = (d * p + pat[i]) % q;
+		t = (d * t + txt[i]) % q;
+	}
+
+	// Slide the pattern over text one by one
+	for (i = 0; i <= N - M; i++) {
+
+		// Check the hash values of current window of text
+		// and pattern. If the hash values match then only
+		// check for characters one by one
+		if (p == t) {
+			/* Check for characters one by one */
+			for (j = 0; j < M; j++) {
+				if (txt[i + j] != pat[j]) {
+					break;
+				}
+			}
+
+			// if p == t and pat[0...M-1] = txt[i, i+1,
+			// ...i+M-1]
+
+			if (j == M)
+				cout << "Pattern found at index " << i
+					<< endl;
+		}
+
+		// Calculate hash value for next window of text:
+		// Remove leading digit, add trailing digit
+		if (i < N - M) {
+			t = (d * (t - txt[i] * h) + txt[i + M]) % q;
+
+			// We might get negative value of t, converting
+			// it to positive
+			if (t < 0)
+				t = (t + q);
+		}
+	}
+}
+
+/* Driver code */
+int main()
+{
+	char txt[] = "GEEKS FOR GEEKS";
+	char pat[] = "GEEK";
+
+	// we mod to avoid overflowing of value but we should
+	// take as big q as possible to avoid the collison
+	int q = INT_MAX;
+
+	// Function Call
+	search(pat, txt, q);
+	return 0;
+}
+
+
+49. Group Anagrams
+
+
+class Solution {
+public:
+    // Define a function named groupAnagrams that takes a vector of strings as input.
+    vector<vector<string>> groupAnagrams(vector<string>& strs) {
+        // Initialize a 2D vector 'ans' to store the grouped anagrams.
+        vector<vector<string>> ans;
+        
+// Initialize an unordered_map 'ump' to associate sorted strings with their original anagrams.
+        unordered_map<string , vector<string>> ump;
+
+        // Iterate through each string in the input vector 'strs'.
+        for(auto x : strs){
+            // Create a copy of the original string 'x' and store it in 'temp'.
+            string temp = x;
+            
+            // Sort the characters in the string 'x'. This helps in grouping anagrams.
+            sort(x.begin() , x.end());
+            
+// Add the original unsorted string 'temp' to the corresponding group in the unordered_map.
+            ump[x].push_back(temp);
+        }
+
+        // Iterate through the unordered_map 'ump'.
+        for(auto x : ump){
+            // Add each group of anagrams to the 'ans' vector.
+            ans.push_back(x.second);
+        }
+        // Return the 2D vector containing grouped anagrams.
+        return ans;
+    }
+};
