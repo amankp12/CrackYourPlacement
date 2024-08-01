@@ -1,1 +1,210 @@
+Word Wrap
 
+int help(vector<int> &nums, int k, int cur_word, int rem_len ){
+        cout << rem_len<< cur_word<< endl;
+        if (cur_word == nums.size()){return 0;}
+        if (rem_len < 0){return help(nums, k , cur_word, k);}
+        if (memo[rem_len][cur_word] >= 0){return memo[rem_len][cur_word];}
+        if (rem_len < nums[cur_word]){
+            return memo[rem_len][cur_word] = (rem_len+1)*(rem_len+1) + help(nums, k, cur_word, k);
+        }
+        if (cur_word == nums.size() - 1){
+            return memo[rem_len][cur_word] = 0;
+        }
+        int ans = min(help(nums, k, cur_word, k) + (rem_len+1)*(rem_len+1) , help(nums, k, cur_word+ 1, rem_len - nums[cur_word] -1));
+        return memo[rem_len][cur_word] = ans; 
+    }
+    int solveWordWrap(vector<int>nums, int k) 
+    { 
+        memo.resize(k+1, vector<int>(nums.size(), -1));
+        return help(nums, k , 0, k);
+        // Code here
+    } 
+
+
+227. Basic Calculator II
+
+
+int calculate(string s) {
+    istringstream in('+' + s + '+');
+    long long total = 0, term = 0, n;
+    char op;
+    while (in >> op) {
+        if (op == '+' or op == '-') {
+            total += term;
+            in >> term;
+            term *= 44 - op;
+        } else {
+            in >> n;
+            if (op == '*')
+                term *= n;
+            else
+                term /= n;
+        }
+    }
+    return total;
+}
+
+
+65. Valid Number
+
+
+bool isNumber(const char *s) 
+{
+    int i = 0;
+    
+    // skip the whilespaces
+    for(; s[i] == ' '; i++) {}
+    
+    // check the significand
+    if(s[i] == '+' || s[i] == '-') i++; // skip the sign if exist
+    
+    int n_nm, n_pt;
+    for(n_nm=0, n_pt=0; (s[i]<='9' && s[i]>='0') || s[i]=='.'; i++)
+        s[i] == '.' ? n_pt++:n_nm++;       
+    if(n_pt>1 || n_nm<1) // no more than one point, at least one digit
+        return false;
+    
+    // check the exponent if exist
+    if(s[i] == 'e') {
+        i++;
+        if(s[i] == '+' || s[i] == '-') i++; // skip the sign
+        
+        int n_nm = 0;
+        for(; s[i]>='0' && s[i]<='9'; i++, n_nm++) {}
+        if(n_nm<1)
+            return false;
+    }
+    
+    // skip the trailing whitespaces
+    for(; s[i] == ' '; i++) {}
+    
+    return s[i]==0;  // must reach the ending 0 of the string
+}
+
+
+273. Integer to English Words
+
+
+class Solution {
+public:
+    string onesName(int n) {  // function for naming digits between 1 to 9
+        switch(n) {
+            case 1: return "One";break;
+            case 2: return "Two"; break;
+            case 3: return "Three"; break;
+            case 4: return "Four"; break;
+            case 5: return "Five"; break;
+            case 6: return "Six"; break;
+            case 7: return "Seven"; break;
+            case 8: return "Eight"; break;
+            case 9: return "Nine"; break;
+        }
+        return "";
+    }
+    
+    string tensName(int n) {  // function for naming digits 10, 20, 30... 90.
+        switch(n) {
+            case 1: return "Ten"; break;
+            case 2: return "Twenty"; break;
+            case 3: return "Thirty"; break;
+            case 4: return "Forty"; break;
+            case 5: return "Fifty"; break;
+            case 6: return "Sixty"; break;
+            case 7: return "Seventy"; break;
+            case 8: return "Eighty"; break;
+            case 9: return "Ninety"; break;
+        }
+        return "";
+    }
+    
+    string giveThreeName(int n) {  // full name of digits from 1 to 100
+        string res = "";
+        if(n / 100 > 0)
+            res += onesName(n / 100) + " Hundred";
+        
+        if(n / 100 > 0 && n % 100 > 0) res += " ";  // managing spaces
+        
+        int t = n % 100;
+        if(t >= 20 || t <= 10) {
+            if(t / 10 > 0)
+                res += tensName(t / 10);
+            
+            if(t / 10 > 0 && t % 10 > 0) res += " ";
+            
+            if(t % 10 > 0)
+                res += onesName(t % 10);
+        }
+        else {  // for the part where the tens number is between 11 to 19
+            switch(t) {
+                case 11: res += "Eleven"; break;
+                case 12: res += "Twelve"; break;
+                case 13: res += "Thirteen"; break;
+                case 14: res += "Fourteen"; break;
+                case 15: res += "Fifteen"; break;
+                case 16: res += "Sixteen"; break;
+                case 17: res += "Seventeen"; break;
+                case 18: res += "Eighteen"; break;
+                case 19: res += "Nineteen"; break;
+            }
+        }
+        
+        return res;
+    }
+    
+    string numberToWords(int num) {
+        if(num == 0) return "Zero";
+        
+        string res = "";
+        res = giveThreeName(num % 1000) + res;
+        num /= 1000;
+        
+        if(num > 0) {
+            if(num % 1000 > 0)
+                res = giveThreeName(num % 1000) + " Thousand " + res;
+            num /= 1000;
+        }
+        
+        if(num > 0) {
+            if(num % 1000 > 0)
+                res = giveThreeName(num % 1000) + " Million " + res;
+            num /= 1000;
+        }
+        
+        if(num > 0) {
+            res = giveThreeName(num % 1000) + " Billion " + res;
+        }
+        
+        if(res.back() == ' ') res.pop_back();
+        
+        return res;
+    }
+};
+
+
+76. Minimum Window Substring
+
+
+class Solution{
+public:
+        string minWindow(string s, string t){
+        unordered_map<char, int> letters;
+        
+        for(auto c : t)
+            letters[c]++; 
+        int count = 0;
+        int low = 0, min_length = INT_MAX, min_start = 0;
+
+        for(int high = 0; high<s.length(); high++) {
+            if(letters[s[high]] > 0) count++;  
+            letters[s[high]]--;
+            if(count == t.length()){ 
+                while(low < high && letters[s[low]] < 0) letters[s[low]]++, low++;
+                if(min_length > high-low) min_length = high-(min_start=low)+1;
+                letters[s[low++]]++;
+                count--; 
+            }
+        }
+        return min_length == INT_MAX ? "" : s.substr(min_start, min_length);
+    }
+};
