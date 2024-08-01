@@ -1,1 +1,161 @@
+20. Valid Parentheses
 
+
+class Solution {
+public:
+    bool isValid(string s) {
+        // Create a stack to store opening brackets
+        stack<char> st;
+        
+        // Iterate through each character in the input string
+        for(auto i : s){
+            // If the character is an opening bracket, push it onto the stack
+            if(i == '(' || i == '{' || i == '['){
+                st.push(i);
+            }
+            else{
+                // If the character is a closing bracket and the stack is empty, it's invalid
+                if(st.empty()){
+                    return false;
+                }
+                else if(st.top() == '(' && i != ')' || // Check for mismatched parentheses
+                        st.top() == '{' && i != '}' || // Check for mismatched curly braces
+                        st.top() == '[' && i != ']'){ // Check for mismatched square brackets
+                    return false;
+                }
+                else{
+                    // If the closing bracket matches the top of the stack, pop it
+                    st.pop();
+                }
+            }
+        }
+        
+        // If the stack is empty at the end, it means all brackets were matched correctly
+        return st.empty();
+    }
+};
+
+
+Print all the duplicate characters in a string
+
+
+// C++ code to implement the above approach
+#include <algorithm>
+#include <iostream>
+#include <string>
+
+using namespace std;
+void printDuplicates(string str)
+{
+    int len = str.length();
+
+    // Sorting the string
+    sort(str.begin(), str.end());
+
+    // Loop through the sorted string to find duplicates
+    for (int i = 0; i < len; i++) {
+        int count = 1;
+
+        // Counting the occurrences of each character
+        while (i < len - 1 && str[i] == str[i + 1]) {
+            count++;
+            i++;
+        }
+
+        // Printing the duplicate character and its count
+        if (count > 1) {
+            cout << str[i] << ", count = " << count << endl;
+        }
+    }
+}
+int main()
+{
+    string str = "test string";
+    printDuplicates(str);
+    return 0;
+}
+// This code is contributed by Veerendra_Singh_Rajpoot
+
+
+
+28. Find the Index of the First Occurrence in a String
+
+
+class Solution {
+public:
+    int strStr(string haystack, string needle) {
+        int m = haystack.size(), n = needle.size();
+        for (int i = 0; i <= m - n; i++) {
+            int j = 0;
+            for (; j < n; j++) {
+                if (haystack[i + j] != needle[j]) {
+                    break;
+                }
+            }
+            if (j == n) {
+                return i;
+            }
+        }
+        return -1;
+    }
+};
+
+
+14. Longest Common Prefix
+
+
+class Solution {
+public:
+    string longestCommonPrefix(vector<string>& strs) {
+        int n = strs.size();
+        if(n==0) return "";
+
+        string ans = "";
+        
+        sort(begin(strs) , end(strs));
+        string a = strs[0];
+        string b = strs[n-1];
+
+        for(int i = 0 ; i < a.size() ; i++){
+            if(a[i] == b[i]){
+                ans = ans + a[i];
+            }
+            else{
+                break;
+            }
+        }
+        return ans;
+    }
+};
+
+
+680. Valid Palindrome II
+
+
+ bool validPalindrome(string s) {
+        for (int i = 0, j = s.size() - 1; i < j; i++, j--)
+            if (s[i] != s[j]) {
+                int i1 = i, j1 = j - 1, i2 = i + 1, j2 = j;
+                while (i1 < j1 && s[i1] == s[j1]) {i1++; j1--;};
+                while (i2 < j2 && s[i2] == s[j2]) {i2++; j2--;};
+                return i1 >= j1 || i2 >= j2;
+            }
+        return true;
+    }
+
+
+
+12. Integer to Roman
+
+
+class Solution {
+public:
+    string intToRoman(int num) {
+        string ones[] = {"","I","II","III","IV","V","VI","VII","VIII","IX"};
+        string tens[] = {"","X","XX","XXX","XL","L","LX","LXX","LXXX","XC"};
+        string hrns[] = {"","C","CC","CCC","CD","D","DC","DCC","DCCC","CM"};
+        string ths[]={"","M","MM","MMM"};
+        
+        return ths[num/1000] + hrns[(num%1000)/100] + tens[(num%100)/10] + ones[num%10];
+    }
+};
