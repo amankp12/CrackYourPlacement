@@ -1,1 +1,258 @@
+Find the number of islands using DFS
 
+
+// C++ Program to count islands in boolean 2D matrix
+#include <bits/stdc++.h>
+using namespace std;
+
+#define ROW 5
+#define COL 5
+
+// A function to check if a given
+// cell (row, col) can be included in DFS
+int isSafe(int M[][COL], int row, int col,
+           bool visited[][COL])
+{
+    // row number is in range, column
+    // number is in range and value is 1
+    // and not yet visited
+    return (row >= 0) && (row < ROW) && (col >= 0)
+           && (col < COL)
+           && (M[row][col] && !visited[row][col]);
+}
+
+// A utility function to do DFS for a
+// 2D boolean matrix. It only considers
+// the 8 neighbours as adjacent vertices
+void DFS(int M[][COL], int row, int col,
+         bool visited[][COL])
+{
+    // These arrays are used to get
+    // row and column numbers of 8
+    // neighbours of a given cell
+    static int rowNbr[] = { -1, -1, -1, 0, 0, 1, 1, 1 };
+    static int colNbr[] = { -1, 0, 1, -1, 1, -1, 0, 1 };
+
+    // Mark this cell as visited
+    visited[row][col] = true;
+
+    // Recur for all connected neighbours
+    for (int k = 0; k < 8; ++k)
+        if (isSafe(M, row + rowNbr[k], col + colNbr[k],
+                   visited))
+            DFS(M, row + rowNbr[k], col + colNbr[k],
+                visited);
+}
+
+// The main function that returns
+// count of islands in a given boolean
+// 2D matrix
+int countIslands(int M[][COL])
+{
+    // Make a bool array to mark visited cells.
+    // Initially all cells are unvisited
+    bool visited[ROW][COL];
+    memset(visited, 0, sizeof(visited));
+
+    // Initialize count as 0 and
+    // traverse through the all cells of
+    // given matrix
+    int count = 0;
+    for (int i = 0; i < ROW; ++i)
+        for (int j = 0; j < COL; ++j)
+
+            // If a cell with value 1 is not
+            if (M[i][j] && !visited[i][j]) {
+                // visited yet, then new island found
+                // Visit all cells in this island.
+                DFS(M, i, j, visited);
+
+                // and increment island count
+                ++count;
+            }
+
+    return count;
+}
+
+// Driver code
+int main()
+{
+    int M[][COL] = { { 1, 1, 0, 0, 0 },
+                     { 0, 1, 0, 0, 1 },
+                     { 1, 0, 0, 1, 1 },
+                     { 0, 0, 0, 0, 0 },
+                     { 1, 0, 1, 0, 1 } };
+
+    cout << "Number of islands is: " << countIslands(M);
+
+    return 0;
+}
+
+
+
+Given a matrix of ‘O’ and ‘X’, replace ‘O’ with ‘X’ if surrounded by ‘X’
+
+// A C++ program to replace all 'O's with 'X''s if surrounded by 'X'
+#include<iostream>
+using namespace std;
+
+// Size of given matrix is M X N
+#define M 6
+#define N 6
+
+
+// A recursive function to replace previous value 'prevV' at '(x, y)'
+// and all surrounding values of (x, y) with new value 'newV'.
+void floodFillUtil(char mat[][N], int x, int y, char prevV, char newV)
+{
+	// Base cases
+	if (x < 0 || x >= M || y < 0 || y >= N)
+		return;
+	if (mat[x][y] != prevV)
+		return;
+
+	// Replace the color at (x, y)
+	mat[x][y] = newV;
+
+	// Recur for north, east, south and west
+	floodFillUtil(mat, x+1, y, prevV, newV);
+	floodFillUtil(mat, x-1, y, prevV, newV);
+	floodFillUtil(mat, x, y+1, prevV, newV);
+	floodFillUtil(mat, x, y-1, prevV, newV);
+}
+
+// Returns size of maximum size subsquare matrix
+// surrounded by 'X'
+int replaceSurrounded(char mat[][N])
+{
+// Step 1: Replace all 'O' with '-'
+for (int i=0; i<M; i++)
+	for (int j=0; j<N; j++)
+		if (mat[i][j] == 'O')
+			mat[i][j] = '-';
+
+// Call floodFill for all '-' lying on edges
+for (int i=0; i<M; i++) // Left side
+	if (mat[i][0] == '-')
+		floodFillUtil(mat, i, 0, '-', 'O');
+for (int i=0; i<M; i++) // Right side
+	if (mat[i][N-1] == '-')
+		floodFillUtil(mat, i, N-1, '-', 'O');
+for (int i=0; i<N; i++) // Top side
+	if (mat[0][i] == '-')
+		floodFillUtil(mat, 0, i, '-', 'O');
+for (int i=0; i<N; i++) // Bottom side
+	if (mat[M-1][i] == '-')
+		floodFillUtil(mat, M-1, i, '-', 'O');
+
+// Step 3: Replace all '-' with 'X'
+for (int i=0; i<M; i++)
+	for (int j=0; j<N; j++)
+		if (mat[i][j] == '-')
+			mat[i][j] = 'X';
+
+}
+
+// Driver program to test above function
+int main()
+{
+	char mat[][N] = {{'X', 'O', 'X', 'O', 'X', 'X'},
+					{'X', 'O', 'X', 'X', 'O', 'X'},
+					{'X', 'X', 'X', 'O', 'X', 'X'},
+					{'O', 'X', 'X', 'X', 'X', 'X'},
+					{'X', 'X', 'X', 'O', 'X', 'O'},
+					{'O', 'O', 'X', 'O', 'O', 'O'},
+					};
+	replaceSurrounded(mat);
+
+
+	for (int i=0; i<M; i++)
+	{
+	for (int j=0; j<N; j++)
+		cout << mat[i][j] << " ";
+	cout << endl;
+	}
+	return 0;
+}
+
+
+54. Spiral Matrix
+
+
+class Solution{
+public:
+    vector<int> spiralOrder(vector<vector<int>>& matrix){
+    int row = matrix.size();
+    int column = matrix[0].size();
+    
+    vector<int> ans;
+    
+    if(row == 0){
+        return ans;
+    }
+    
+    int left = 0;
+    int right = column - 1;
+    int top = 0;
+    int bottom = row - 1;
+    int d = 0;
+    
+    while(left <= right && top <= bottom){
+        if(d == 0){
+            for(int i = left ; i <= right; i++){
+                ans.push_back(matrix[top][i]);
+            }
+            d = 1;
+            top++;
+        }
+        
+        else if(d == 1){
+            for(int i = top ; i <= bottom; i++){
+                ans.push_back(matrix[i][right]);
+            }
+            d = 2;
+            right--;
+        }
+        
+        else if(d == 2){
+            for(int i = right ; i >= left; i--){
+                ans.push_back(matrix[bottom][i]);
+            }
+            d = 3;
+            bottom--;
+        }
+        
+        else if(d == 3){
+            for(int i = bottom ; i >= top; i--){
+                ans.push_back(matrix[i][left]);
+            }
+            d = 0;
+            left++;
+        }
+    }
+    return ans;
+    }
+};
+
+
+
+48. Rotate Image
+
+
+class Solution{
+public:
+    void rotate(vector<vector<int>>& matrix){
+        int n = matrix.size();
+        //transpose
+        for(int i = 0 ; i < n ; i++){
+            for(int j = 0 ; j < i ; j++){
+                swap(matrix[i][j] , matrix[j][i]);
+            }
+        }
+        
+        //reverse
+        for(int i = 0 ; i < n ; i++){
+            reverse(matrix[i].begin() , matrix[i].end());
+        }
+    }
+};
