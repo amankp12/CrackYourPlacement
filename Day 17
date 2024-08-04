@@ -1,1 +1,84 @@
+160. Intersection of Two Linked Lists
 
+class Solution {
+public:
+    ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+        if(headA == NULL || headB == NULL)
+            return NULL;
+
+        ListNode *a = headA;
+        ListNode *b = headB;
+
+        // keep on traversing till both of them are not equal
+        while(a != b){
+        // for the end of first iteration , we just reset the pointer to the head of another LL
+            a = a == NULL ? headB : a -> next;
+            b = b == NULL ? headA : b -> next;
+        }
+        return a;
+    }
+};
+
+
+Multiply two linked lists
+
+
+long long  multiplyTwoLists (Node* l1, Node* l2){
+    long long  a = 0;
+    long long  b = 0;
+    Node* t1 = l1;
+    Node* t2 = l2;
+    while(t1 || t2){
+        if(t1 != NULL){
+            a = (a*10)%1000000007 + t1->data;
+            t1 = t1->next;
+        }
+        if(t2 != NULL){
+            b = (b*10)%1000000007 + t2->data;
+            t2 = t2->next;
+        }
+    }
+    return (a*b)%1000000007;
+}
+
+
+Delete nodes having greater value on right
+
+
+class Solution
+{
+    public:
+    Node *compute(Node *head)
+    {
+        // your code goes here
+        head=rev(head);
+        int max=head->data;
+        Node*curr=head->next;
+        Node*prev=head;
+        
+        while(curr!=NULL){
+            if(curr->data>=max){
+                prev=curr;  //deleting prev
+                max=curr->data; //storing max val of curr in max then return maxval
+            }
+            else{
+                prev->next=curr->next; //when curr data is < max make two jumps
+            }
+            curr=curr->next;
+        }
+        return rev(head);
+    }
+    Node *rev( Node *head ){
+        Node *curr = head ;
+        Node *prev = nullptr ;
+        Node*temp = nullptr ;
+        
+        while( curr != NULL ){
+            temp = curr->next ;
+            curr->next = prev ;
+            prev = curr ;
+            curr = temp ;
+        }
+        return prev;
+    }
+};
