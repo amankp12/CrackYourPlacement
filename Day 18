@@ -1,1 +1,77 @@
+2. Add Two Numbers
 
+class Solution {
+public:
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+        ListNode *dummy = new ListNode(0); // creating a dummy node
+        ListNode *curr = dummy; // initialising a pointer
+        int carry = 0;
+
+        // while loop will run, until l1 OR l2 not reaches null OR
+        // if they both reaches null.But our carry has some value in it.
+        //We will add that as well into our list
+        
+        while(l1 != NULL || l2 != NULL || carry == 1){
+            int sum = 0;
+            
+            if(l1 != NULL){ // // adding l1 to our sum & moving l1
+                sum += l1->val;
+                l1 = l1->next;
+            }
+            if(l2 != NULL){  // // adding l2 to our sum & moving l2
+                sum += l2->val;
+                l2 = l2->next;
+            }
+            sum += carry;
+            carry = sum/10;
+
+            ListNode *node = new ListNode(sum % 10);
+        // the value we'll get by moduloing it,will become as new node so, add it to our list
+            
+            curr->next = node; // // curr will point to that new node if we get
+            curr = curr->next;
+        }
+    // return dummy -> next bcz, we don't want the value we have consider in it intially!!
+        return dummy->next;
+    }
+};
+
+
+206. Reverse Linked List
+
+
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+        ListNode * prev = NULL;
+        ListNode * curr = head;
+        while(curr != NULL){
+            ListNode * ahead = curr -> next;
+            curr -> next = prev;
+            prev = curr;
+            curr = ahead;
+        }
+        return prev;
+    }
+};
+
+
+234. Palindrome Linked List
+
+
+class Solution {
+public:
+    bool isPalindrome(ListNode* head) {
+        ListNode *slow = head, *fast = head, *prev, *temp;
+        while (fast && fast->next)
+            slow = slow->next, fast = fast->next->next;
+        prev = slow, slow = slow->next, prev->next = NULL;
+        while (slow)
+            temp = slow->next, slow->next = prev, prev = slow, slow = temp;
+        fast = head, slow = prev;
+        while (slow)
+            if (fast->val != slow->val) return false;
+            else fast = fast->next, slow = slow->next;
+        return true;
+    }
+};
