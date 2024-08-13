@@ -1,1 +1,87 @@
+BFS of graph
 
+ vector<int> bfsOfGraph(int V, vector<int> adj[]) {
+        // Code here
+        vector<int> ans, vis(V, 0);
+        queue<int> q;
+        q.push(0);
+        vis[0]=1;
+        while(!q.empty())
+        {
+            int front= q.front();
+            q.pop();
+            ans.push_back(front);
+            for(auto &it : adj[front])
+            {
+                if(!vis[it])
+                {
+                    q.push(it);
+                   
+                    vis[it]=1;
+                }
+                 
+            }
+        }
+        return ans;
+    }
+
+
+
+DFS of Graph
+
+class Solution {
+    private:
+        void dfs(int node , vector<int> &list , vector<int> adj[] , int vis[]){
+            vis[node] = 1 ;
+            list.push_back(node) ;
+            
+            for(auto it: adj[node]){
+                if(vis[it]==0){
+                    dfs(it,list,adj,vis);   
+                }
+            }
+        }
+  public:
+    // Function to return a list containing the DFS traversal of the graph.
+    vector<int> dfsOfGraph(int V, vector<int> adj[]) {
+        int vis[V] ={0}; 
+        vis[0] = 1 ; 
+        int start =0 ; 
+        vector<int> list ; 
+        dfs(start, list, adj, vis); 
+        return list;
+    }
+
+
+200. Number of Islands
+
+class Solution {
+public:
+    int numIslands(vector<vector<char>>& grid) {
+        int m = grid.size(), n = m ? grid[0].size() : 0;
+        int islands = 0;
+        int offsets[] = {0, 1, 0, -1, 0};
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == '1') {
+                    islands++;
+                    grid[i][j] = '0';
+                    queue<pair<int, int>> todo;
+                    todo.push({i, j});
+                    while (!todo.empty()) {
+                        pair<int, int> p = todo.front();
+                        todo.pop();
+                        for (int k = 0; k < 4; k++) {
+                            int r = p.first + offsets[k], c = p.second + offsets[k + 1];
+                            if (r >= 0 && r < m && c >= 0 && c < n && grid[r][c] == '1') {
+                                grid[r][c] = '0';
+                                todo.push({r, c});
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return islands;
+    }
+};
