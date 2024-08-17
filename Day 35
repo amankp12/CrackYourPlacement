@@ -1,0 +1,78 @@
+70. Climbing Stairs
+
+class Solution {
+public:
+    int climbStairs(int n) {
+        if(n <= 3){
+            return n;
+        }
+        vector<int> dp(n+1, -1);
+        dp[1] = 1;
+        dp[2] = 2;
+        dp[3] = 3;
+
+        for(int i = 4; i <= n ; i++){
+            dp[i] = dp[i-1] + dp[i-2];
+        }
+        return dp[n];
+    }
+};
+
+
+152. Maximum Product Subarray
+
+
+int maxProduct(int A[], int n) {
+    int r = A[0];
+
+    for (int i = 1, imax = r, imin = r; i < n; i++) {
+        if (A[i] < 0)
+            swap(imax, imin);
+
+        imax = max(A[i], imax * A[i]);
+        imin = min(A[i], imin * A[i]);
+
+        r = max(r, imax);
+    }
+    return r;
+}
+
+
+474. Ones and Zeroes
+
+
+int sub(vector<pair<int,int>> &a, int index , int nOnes , int nZeros)
+    {
+        // BASE CASES
+        // 1. if we have reched the end of our array then we dont have any options left
+        // 2. if we have no available zeros or ones to use then also we dont have any options left
+        int n = a.size();
+        if(index == n or (nZeros ==0 and nOnes == 0))   return 0;
+        
+        if(a[index].first > nOnes or a[index].second > nZeros)  
+            return sub(a , index+1 , nOnes , nZeros);
+        
+        // now at this point we have two paths to explore, we want to know that what is the answer going to be if i 
+        // use this pair 
+        // or if i leave this pair
+        int include = 1 + sub(a , index+1, nOnes - a[index].first , nZeros - a[index].second);
+        int exclude = sub(a , index+1 , nOnes , nZeros);
+        
+        // now since we know the our answers for both of our decisions then we can choose the one which yeilds the max result
+        return max(include , exclude);     
+    }    
+    int findMaxForm(vector<string>& strs, int nZeros, int nOnes) 
+    {
+        // lets make a array of pairs which is going to store no of zeros and no of ones for ith string
+        vector<pair<int,int>> a;
+        for(auto i : strs)
+        {
+            int one = 0 , zero = 0;
+            for(auto j : i)
+                (j == '1') ? one ++ : zero++;
+            a.push_back({one , zero});
+        }
+        
+        int ans = sub(a , 0 , nOnes , nZeros);
+        return ans;
+    }
