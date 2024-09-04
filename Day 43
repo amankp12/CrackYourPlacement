@@ -1,0 +1,94 @@
+134. Gas Station
+
+
+class Solution {
+public:
+    int canCompleteCircuit(vector<int>& gas, vector<int>& cost) {
+        int n = gas.size();
+        int total_surplus = 0;
+        int surplus = 0;
+        int start = 0;
+        for(int i = 0; i < n; i++){
+            total_surplus += gas[i] - cost[i];
+            surplus += gas[i] - cost[i];
+            if(surplus < 0){
+                surplus = 0;
+                start = i + 1;
+            }
+        }
+        return (total_surplus < 0) ? -1 : start;
+    }
+};
+
+
+Minimum cost for acquiring all coins with k extra coins allowed with every coin
+
+
+// C++ program to acquire all n coins 
+#include<bits/stdc++.h> 
+using namespace std; 
+
+// function to calculate min cost 
+int minCost(int coin[], int n, int k) 
+{ 
+	// sort the coins value 
+	sort(coin, coin + n); 
+
+	// calculate no. of 
+	// coins needed 
+	int coins_needed = ceil(1.0 * n / 
+							(k + 1)); 
+
+	// calculate sum of 
+	// all selected coins 
+	int ans = 0; 
+	for (int i = 0; i <= coins_needed - 1; 
+									i++) 
+		ans += coin[i]; 
+	
+	return ans; 
+} 
+
+// Driver Code 
+int main() 
+{ 
+	int coin[] = {8, 5, 3, 10, 
+				2, 1, 15, 25}; 
+	int n = sizeof(coin) / sizeof(coin[0]); 
+	int k = 3; 
+	cout << minCost(coin, n, k); 
+	return 0; 
+} 
+
+
+
+1743. Restore the Array From Adjacent Pairs
+
+
+class Solution {
+public:
+    vector<int> restoreArray(vector<vector<int>>& adjacentPairs) {
+    unordered_map<int, vector<int>> ps;
+    for (auto &p : adjacentPairs) {
+        ps[p[0]].push_back(p[1]);
+        ps[p[1]].push_back(p[0]);
+    }
+    vector<int> res;
+    for (auto &p : ps) {
+        if (p.second.size() == 1) {
+            res.push_back(p.first);
+            res.push_back(p.second[0]);
+            break;
+        }
+    }
+    while (res.size() < adjacentPairs.size() + 1) {
+        auto tail = res.back(), prev = res[res.size() - 2];
+        auto &next = ps[tail];
+        if (next[0] != prev)
+            res.push_back(next[0]);
+        else
+            res.push_back(next[1]);
+    }
+    return res;
+    }
+};
